@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Django Todo</title>
+
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container { 
+            background: #ffffff;
+            padding: 30px;
+            margin-top: 60px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            width: 420px;
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 26px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] { 
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #6a82fb;
+            box-shadow: 0 0 5px rgba(106, 130, 251, 0.5);
+            outline: none;
+        }
+
+        .btn-add { 
+            padding: 12px 18px;
+            background: #6a82fb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .btn-add:hover {
+            background: #5468e7;
+            transform: scale(1.04);
+        }
+
+        .task-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #6a82fb;
+            transition: 0.3s;
+        }
+
+        .task-row:hover {
+            transform: scale(1.02);
+            background: #f1f1f1;
+        }
+
+        .completed { 
+            text-decoration: line-through; 
+            color: #888; 
+        }
+
+        .btn-check { 
+            background: #6c63ff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-check:hover {
+            background: #4a47d5;
+            transform: scale(1.08);
+        }
+
+        /* Completed green button */
+        .btn-done {
+            background: #28a745 !important;
+        }
+
+        .btn-done:hover {
+            background: #1e7e34 !important;
+        }
+
+        .tick {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-del { 
+            background: #ff4b5c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-del:hover {
+            background: #e63e4f;
+            transform: scale(1.08);
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2>My Todo List</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Add new task...">
+        <input class="btn-add" type="submit" value="Add">
+    </form>
+
+    <div style="margin-top: 20px;">
+        {% for task in tasks %}
+        <div class="task-row">
+
+            <div>
+                {% if task.completed %}
+                    <span class="completed">{{ task.title }}</span>
+                {% else %}
+                    <span>{{ task.title }}</span>
+                {% endif %}
+            </div>
+
+            <div>
+                <a class="btn-check {% if task.completed %}btn-done{% endif %}" 
+                   href="{% url 'update_task' task.id %}">
+                    {% if task.completed %}
+                        <span class="tick">✔</span> Undo
+                    {% else %}
+                        Done
+                    {% endif %}
+                </a>
+
+                <a class="btn-del" href="{% url 'delete_task' task.id %}">Delete</a>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
